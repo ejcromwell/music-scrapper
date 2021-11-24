@@ -38,7 +38,15 @@ async function getTracks(inputs) {
     return {status: 200, data: data};
 
   } catch (error) {
+    // TODO: develop this error and validation so that it checks
+    // for the input string instead of the dropdown and if
+    // it doesn't pass validation, then you cannot submit the form.
+    // Further improvement is add the CSS selector for track title
+    // and track artist and the container element so that it can
+    // target those. Will need validation to check they are
+    // proper CSS selectors.
     console.log("error with getUrl: ", error);
+    return { status: 500, data: '' };
   }
 
 }
@@ -50,7 +58,12 @@ function Hero() {
 
   async function handleFormData (inputs) {
     const res = await getTracks(inputs);
-    res.status !== 200 ? setError(true) : setTracks(res.data);
+    if (res.status === 200) {
+      setError(false);
+      setTracks(res.data);
+      return;
+    }
+    setError(true);
   }
 
   return (
