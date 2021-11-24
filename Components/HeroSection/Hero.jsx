@@ -5,6 +5,10 @@ import WebResults from '../WebResults/WebResults.jsx';
 
 
 function createEndpoint(inputs) {
+  if (inputs.url === undefined || inputs.location === undefined) {
+    return false;
+  }
+
   let url = "/api/scraper?";
   url += "location=" + encodeURIComponent(inputs.location);
   url += "&url=" + encodeURIComponent(inputs.url);
@@ -21,6 +25,9 @@ function createEndpoint(inputs) {
 async function getTracks(inputs) {
 
   const url = createEndpoint(inputs);
+  if (url === false) {
+    return { status: 500, data: "" };
+  }
 
   try {
     const response = await fetch(url);
@@ -38,13 +45,6 @@ async function getTracks(inputs) {
     return {status: 200, data: data};
 
   } catch (error) {
-    // TODO: develop this error and validation so that it checks
-    // for the input string instead of the dropdown and if
-    // it doesn't pass validation, then you cannot submit the form.
-    // Further improvement is add the CSS selector for track title
-    // and track artist and the container element so that it can
-    // target those. Will need validation to check they are
-    // proper CSS selectors.
     console.log("error with getUrl: ", error);
     return { status: 500, data: '' };
   }
