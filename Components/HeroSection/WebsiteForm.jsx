@@ -1,8 +1,7 @@
-import{ useState} from 'react';
+import { useState } from "react";
 
 import useTrackForm from "../../Hooks/useTrackForm";
-import DownArrow from '../../SVG/DownArrow.jsx';
-
+import DownArrow from "../../SVG/DownArrow.jsx";
 
 /**
  * Take input values and make sure they are both there and that they are not empty values.
@@ -11,19 +10,22 @@ import DownArrow from '../../SVG/DownArrow.jsx';
  * @returns bool
  */
 function validate(inputs) {
-  if (inputs && Object.keys(inputs).length < 2) {
+  if (!inputs || inputs === undefined) {
     return false;
   }
 
   if (inputs.url === "" || inputs.location === "") {
     return false;
   }
-  return true;
+
+  if (Object.keys(inputs).length === 2) {
+    return true;
+  }
+
+  return false;
 }
 
-
-function WebsiteForm({formData}) {
-
+function WebsiteForm({ formData }) {
   const [error, setError] = useState(false);
 
   /**
@@ -33,7 +35,7 @@ function WebsiteForm({formData}) {
    * @param {Object} inputs Form input values.
    * @returns void
    */
-  async function returnFormSubmit(inputs) {
+  async function returnFormSubmit(event, inputs) {
 
     const validation = validate(inputs);
 
@@ -46,12 +48,12 @@ function WebsiteForm({formData}) {
     setError(true);
   }
 
-  const { inputs, handleInputChange, handleSubmit } = useTrackForm(returnFormSubmit);
+  const { inputs, handleInputChange, handleSubmit } =
+    useTrackForm(returnFormSubmit);
 
   return (
     <div className="mt-8">
       <div className="flex flex-col items-stretch w-full h-full mb-6 relative">
-
         {error && (
           <div className="error text-xs text-red-300">
             Please fill in all fields
