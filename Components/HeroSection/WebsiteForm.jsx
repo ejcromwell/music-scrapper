@@ -48,8 +48,7 @@ function WebsiteForm({ formData }) {
     setError(true);
   }
 
-  const { inputs, handleInputChange, handleSubmit } =
-    useTrackForm(returnFormSubmit);
+  const { inputs, handleInputChange, handleSubmit } = useTrackForm(returnFormSubmit);
 
   return (
     <div className="mt-8">
