@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 import TableHeader from './Table/TableHeader.jsx';
 import TableRow from './Table/TableRow.jsx';
@@ -17,6 +17,7 @@ function ResultsTable({results}) {
   const [option, setOption] = useState(0);
   const [tracks, setTracks] = useState(results);
   const [checkedValues, setCheckedValues] = useState([]);
+  const [resetAll, setResetAll] = useState();
 
   function handleSubmit(event) {
     event.preventDefault();
@@ -24,7 +25,8 @@ function ResultsTable({results}) {
     // name of the option value selected from the update dropdown select.
     const optionName = options.find((element) => element.id === Number(option));
 
-    let trackList = tracks; // Copy track list array ready to modify with new status values
+    // Copy track list array ready to modify with new status values
+    let trackList = tracks;
 
     // Update status value matched against all the
     // list items that were checked in the form.
@@ -35,10 +37,12 @@ function ResultsTable({results}) {
     })
 
     localStorage.setItem("trackList", JSON.stringify(trackList));
+
     // reset checkbox input values so none are checked after form submission
     setCheckedValues([]);
 
     setTracks(trackList);
+    setResetAll(true);
   }
 
   function handleOptionsChange(value) {
@@ -57,12 +61,27 @@ function ResultsTable({results}) {
     setCheckedValues( selected );
   }
 
+  // Check or uncheck all checkboxes
+  function handleCheckAll(value) {
+
+    if (value) {
+      let selected = tracks.map( (track) => track.id);
+      setCheckedValues(selected);
+      return;
+    }
+    setCheckedValues([]);
+  }
+
+  useEffect(() => {
+    setResetAll(false);
+  }, [resetAll]);
+
   return (
     <div className="-my-2 py-2 overflow-x-auto sm:-mx-6 sm:px-6 lg:-mx-8 pr-10 lg:px-8">
       <form onSubmit={handleSubmit}>
         <div className="align-middle inline-block min-w-full shadow overflow-hidden bg-white shadow-dashboard px-8 pt-3 rounded-bl-lg rounded-br-lg">
           <table className="min-w-full">
-            <TableHeader />
+            <TableHeader checkAll={handleCheckAll} handleReset={resetAll}/>
             <tbody className="bg-white">
               {tracks &&
                 tracks.map((row, index) => (
